@@ -1,14 +1,11 @@
-// export const getAll = () => {
-//   return fetch('http://www.recipepuppy.com/api/').then((response) => {
-//       if(response.statusText === 'OK') {
-//           return response.json();
-//       }
-//       throw new Error('Network response was not ok.');
-//   })
-// }
+export const getAll = () => {
+  return fetch('https://swapi.co/api/planets/', {
+    cache: 'force-cache',
+  }).then(response => response.json())
+}
 
 export const get = (id) => {
-  return fetch(`http://api.walmartlabs.com/v1/items/{$id}?format=json&apiKey=2hk4zs8mdydbhf3d94v8wc4d`).then((response) => {
+  return fetch(`https://swapi.co/api/planets/${id}`).then((response) => {
       if(response.statusText === 'OK') {
           return response.json();
       }

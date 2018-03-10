@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as walmartService from '../../services/walmart.service';
+import * as walmartService from '../../services/swapi.service';
 
 export default class Product extends React.Component {
     constructor(props) {
@@ -12,24 +12,24 @@ export default class Product extends React.Component {
     // React lifecycle event
     // https://reactjs.org/docs/react-component.html#the-component-lifecycle
     componentWillMount() {
-      walmartService.get().then(response => this.setState({ product: response.message }));
+      walmartService.getAll().then(
+        //   response => console.log(response)
+          response => this.setState({ product: response })
+        );
     }
 
-    renderProduct() {
-        return this.state.product.map((product, i) => (<li key={i}><Student avatar={student.avatar} name={student.name} id={student.id} /></li>));
-    }
+    // renderProduct() {
+    //     return this.state.product.map((product, i) => (<li key={i}><Student avatar={student.avatar} name={student.name} id={student.id} /></li>));
+    // }
 
     render() {
         return (
             <section>
-                <div className="wrapper">
-                    <h2>Alle studenten</h2>
-
-                    <ul className="people">
-                        {this.state.students.length ? this.renderStudents() : (<p>Geen studenten gevonden</p>)}
-                    </ul>
+                <div>
+                    {this.state.product}
                 </div>
-            </section>);
+            </section>
+            );
     }
 };
         
