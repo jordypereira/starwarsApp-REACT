@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import Person from './person';
+import Person from './Person';
 import * as peopleService from '../../services/Swapi/people.service';
 
 export default class Planets extends React.Component {
