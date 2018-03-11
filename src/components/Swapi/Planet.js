@@ -12,7 +12,8 @@ export default class Planet extends React.Component {
           people: [],
           properties: [
               'climate',
-              'terrain'
+              'terrain',
+            'population',
           ]
       };
   }
@@ -25,18 +26,38 @@ export default class Planet extends React.Component {
 
   renderPeople() {
       return this.state.people.map((person, i) => (
-          <Person person={person} key={i} />
+          <Person person={person} key={i} name={i} onDelete={this.deleteResident.bind(this)} />
           ));
   }
 
   renderProperties() {
       return this.state.properties.map((element, i) => (
-          <PlanetProperty name={this.capitalizeFirstLetter(element)} value={this.props.planet[element]} key={i} />
+          <PlanetProperty name={this.capitalizeFirstLetter(element)} value={this.props.planet[element]} onDelete={this.deleteProperty.bind(this)} key={i} />
       ));
+  }
+
+  deleteProperty(e) {
+    const property = e.target.value.toLowerCase();
+    this.setState({
+      properties: this.state.properties.filter(i => i !== property)
+    });
+  }
+
+  deleteResident(e) {
+    const property = e.target.value;
+    console.log(property)
+    console.log(this.state.people)
+    console.log(this.state.properties)
+    this.setState({
+      people: this.spliceNoMutate(this.state.people, property)
+    });
   }
 
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  spliceNoMutate(myArray,indexToRemove) {
+    return myArray.slice(0,indexToRemove).concat(myArray.slice(indexToRemove+1));
   }
 
   render () {
@@ -54,9 +75,6 @@ export default class Planet extends React.Component {
         </Link>
         <ul className="list-group">
           {properties}
-          {/*<PlanetProperty name="Climate" value={planet.climate} />*/}
-          {/*<PlanetProperty name="Terrain" value={planet.terrain} />*/}
-          {/*<PlanetProperty name="Population" value={planet.population} />*/}
           <div className="card-header">
             Residents:
           </div>
