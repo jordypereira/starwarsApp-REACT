@@ -8,6 +8,7 @@ export default class Planets extends React.Component {
         this.state = {
             planets: [],
             nextPlanet: '',
+            isLoading: true,
         };
     }
 
@@ -24,26 +25,38 @@ export default class Planets extends React.Component {
       if(url){
         planetService.getFromUrl(url).then(response => this.setState({ planets: this.state.planets.concat(response.results), nextPlanet: response.next }, () => this.fetchNextPlanet(this.state.nextPlanet)));      
       }  
+      else{
+        this.setState({isLoading: false})
+      }
     }
 
     renderPlanets() {
-      console.log(this.state.planets)
       return this.state.planets.map((planet, i) => (
           <div className="col" key={i}>
-            <Planet name={planet.name} climate={planet.climate} terrain={planet.terrain} population={planet.population} residents={planet.residents} id={i} />
+            <Planet planet={planet} id={i} />
           </div>
             ));
     }
 
     render() {
+      let content = '';
+      if(this.state.planets.length){
+        if(!this.state.isLoading){
+          content = this.renderPlanets();
+        }else{
+          content = (<p>Planets are loading</p>);
+        }
+      }else{
+        content = (<p>No Planets found</p>);
+      }
       return (
           <section>
             <h2>All Planets</h2>
             <div className="row cards">            
-              {this.state.planets.length ? this.renderPlanets() : (<p>No Planets found</p>)}
+              {content}
             </div>
           </section>
           );
     }
-};
+}
         
