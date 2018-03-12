@@ -5,6 +5,7 @@ import * as peopleService from '../../services/Swapi/people.service';
 import {capitalizeFirstLetter} from "../../functions";
 import PlanetHeader from "./PlanetHeader";
 import _ from "lodash/array";
+import PropTypes from "prop-types";
 
 export default class Planet extends React.Component {
   constructor(props) {
@@ -45,7 +46,6 @@ export default class Planet extends React.Component {
           this.props.planet.residents.forEach(url => {
               let cachedResident = localStorage.getItem(url);
               if (cachedResident) {
-                  console.log("Get cache: " + cachedResident);
                   this.setResident(JSON.parse(cachedResident));
               }else{
                   peopleService.getFromUrl(url)
@@ -65,7 +65,6 @@ export default class Planet extends React.Component {
 
   setResidentInLocalStorage(resident){
       this.setResident(resident);
-      console.log("Set cache: " + resident);
       localStorage.setItem(resident.url, JSON.stringify(resident));
   }
 
@@ -89,7 +88,7 @@ export default class Planet extends React.Component {
 
   renderProperties() {
       return this.state.shownProperties.map((element, i) => (
-        <PlanetProperty name={capitalizeFirstLetter(element.replace('_', ' '))} value={this.props.planet[element]} onDelete={this.deleteProperty.bind(this)} key={i} />
+        <PlanetProperty name={element} value={this.props.planet[element]} onDelete={this.deleteProperty.bind(this)} key={i} />
       ))
   }
 
@@ -133,3 +132,7 @@ export default class Planet extends React.Component {
     );   
   }
 }
+
+Planet.propTypes = {
+  planet: PropTypes.object,
+};

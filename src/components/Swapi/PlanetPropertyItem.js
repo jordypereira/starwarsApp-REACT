@@ -8,7 +8,8 @@ const PlanetPropertyItem = (props) => (
 );
 
 PlanetPropertyItem.propTypes = {
-  name: PropTypes.string
+  name: PropTypes.string,
+  onAdd: PropTypes.func,
 };
 
 export default PlanetPropertyItem;
