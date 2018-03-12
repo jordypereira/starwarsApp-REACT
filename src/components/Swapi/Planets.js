@@ -12,13 +12,27 @@ export default class Planets extends React.Component {
         };
     }
 
-    // React lifecycle event
-    // https://reactjs.org/docs/react-component.html#the-component-lifecycle
-    componentWillMount() {
-      planetService.getAll().then(response => this.setState(
-        {planets: response.results, nextPlanet: response.next }, 
-        () => this.fetchNextPlanet(this.state.nextPlanet)
-      ));
+    componentDidMount() {
+      this.getPlanets();
+    }
+
+    getPlanets () {
+        const cachedPlanets = localStorage.getItem('planets');
+        if (cachedPlanets) {
+            this.setState({ planets: JSON.parse(cachedPlanets) });
+            this.setState({isLoading: false});
+            return;
+        }
+
+        planetService.getAll()
+          .then(response => this.setPlanets(response));
+    }
+
+    setPlanets(response) {
+        this.setState(
+          {planets: response.results, nextPlanet: response.next },
+          () => this.fetchNextPlanet(this.state.nextPlanet)
+        )
     }
 
     fetchNextPlanet(url){
@@ -26,7 +40,8 @@ export default class Planets extends React.Component {
         planetService.getFromUrl(url).then(response => this.setState({ planets: this.state.planets.concat(response.results), nextPlanet: response.next }, () => this.fetchNextPlanet(this.state.nextPlanet)));      
       }  
       else{
-        this.setState({isLoading: false})
+        localStorage.setItem('planets', JSON.stringify(this.state.planets));
+        this.setState({isLoading: false});
       }
     }
 

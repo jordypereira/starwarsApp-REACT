@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import PlanetPropertyItem from "./PlanetPropertyItem";
 
 
@@ -17,13 +16,11 @@ class PlanetHeader extends React.Component {
 
         return (
           <div>
-              <Link to={`/${this.props.name}`}>
-                  <div className="card-header text-center">
-                      {this.props.name}
-                  </div>
-              </Link>
+              <h4 className="card-header text-center">
+                  {this.props.name}
+              </h4>
               <div className="text-center dropdown">
-                  <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
+                  <button className="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
                       Add <span className="caret"></span>
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
