@@ -2,7 +2,7 @@ import * as React from 'react';
 
 const Resident = (props) => (
   <li className="list-group-item">
-      {props.resident.name}
+      {props.resident}
   </li>
 );
 

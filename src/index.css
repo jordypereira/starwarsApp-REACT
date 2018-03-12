@@ -8,12 +8,16 @@ body {
   display: block;
 }
 
-.cards > .col {
+.cards > * {
   break-inside: avoid;
   overflow: unset;
 }
 
-@media (min-width: 620px) {
+.card{
+    margin: 0 auto;
+}
+
+@media (min-width: 770px) {
   .cards {
     column-count: 2;
     column-gap: 20px;
@@ -24,4 +28,9 @@ body {
   .cards {
     column-count: 3;
   }
+}
+@media (min-width: 1200px) {
+    .cards {
+        column-count: 4;
+    }
 }

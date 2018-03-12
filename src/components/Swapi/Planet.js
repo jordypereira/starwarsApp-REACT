@@ -26,54 +26,71 @@ export default class Planet extends React.Component {
             'edited'
           ],
           hideResidents: true,
+          loadingResidents: true,
       };
   }
   
   componentDidMount() {
-    this.setState({
-       allProperties: _.difference(Object.keys(this.props.planet), this.state.disabledProperties)
-    });
+    this.setAllProperties();
+  }
+
+  setAllProperties() {
+      this.setState({
+          allProperties: _.difference(Object.keys(this.props.planet), this.state.disabledProperties)
+      });
   }
 
   getResidents() {
-
       if(this.state.residents.length === 0){
           this.props.planet.residents.forEach(url => {
-              const cachedResident = localStorage.getItem(url);
+              let cachedResident = localStorage.getItem(url);
               if (cachedResident) {
+                  console.log("Get cache: " + cachedResident);
                   this.setResident(JSON.parse(cachedResident));
-                  return;
+              }else{
+                  peopleService.getFromUrl(url)
+                    .then(response => this.setResidentInLocalStorage(response));
               }
-              peopleService.getFromUrl(url)
-                .then(response => this.setResidentInLocalStorage(response));
           });
           this.setState({hideResidents: false})
       }
   }
 
-  setResident(response){
-      this.setState({ residents: [...this.state.residents, response] });
+  setResident(resident){
+      this.setState(prevState => ({
+          residents: [...prevState.residents, resident.name],
+          loadingResidents: false,
+      }));
   }
 
-  setResidentInLocalStorage(response){
-      this.setResident(response);
-      localStorage.setItem(response.url, JSON.stringify(response));
+  setResidentInLocalStorage(resident){
+      this.setResident(resident);
+      console.log("Set cache: " + resident);
+      localStorage.setItem(resident.url, JSON.stringify(resident));
   }
 
-  renderResidents() {
-      return this.state.residents.map((resident, i) => (
+  renderResidents(loading = false) {
+      if(this.props.planet.residents.length){
+          if(loading){
+              return <li className="list-group-item">Loading Residents</li>
+          }
+        return this.state.residents.map((resident, i) => (
           <Resident resident={resident} key={i} />
-          ));
+        ));
+      }
+      else{
+          return <li className="list-group-item">This planet has no residents</li>
+      }
   }
 
   showResidents(){
-      this.getResidents();
+      this.getResidents(true);
   }
 
   renderProperties() {
       return this.state.shownProperties.map((element, i) => (
-          <PlanetProperty name={capitalizeFirstLetter(element)} value={this.props.planet[element]} onDelete={this.deleteProperty.bind(this)} key={i} />
-      ));
+        <PlanetProperty name={capitalizeFirstLetter(element.replace('_', ' '))} value={this.props.planet[element]} onDelete={this.deleteProperty.bind(this)} key={i} />
+      ))
   }
 
   deleteProperty(e) {
@@ -97,7 +114,6 @@ export default class Planet extends React.Component {
 
   render () {
     const planet = this.props.planet;
-    const residents = planet.residents.length ? this.renderResidents() : (<li className="list-group-item"> This planet has no residents</li>) ;
     const properties = this.state.shownProperties.length ? this.renderProperties() : '' ;
     const showResidentsButton = (planet.residents.length && this.state.hideResidents) ? (
         <button className="btn btn-secondary btn-sm" onClick={() => this.showResidents()}>Show</button>) : '';
@@ -111,7 +127,7 @@ export default class Planet extends React.Component {
               <b>Residents:</b>
               {showResidentsButton}
           </li>
-          {residents}      
+          {this.renderResidents()}
         </ul>
       </div>
     );   

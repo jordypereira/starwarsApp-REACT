@@ -35,39 +35,41 @@ export default class Planets extends React.Component {
         )
     }
 
+    setPlanetsInLocalStorage(){
+        localStorage.setItem('planets', JSON.stringify(this.state.planets));
+    }
+
     fetchNextPlanet(url){
       if(url){
         planetService.getFromUrl(url).then(response => this.setState({ planets: this.state.planets.concat(response.results), nextPlanet: response.next }, () => this.fetchNextPlanet(this.state.nextPlanet)));      
       }  
       else{
-        localStorage.setItem('planets', JSON.stringify(this.state.planets));
+        this.setPlanetsInLocalStorage();
         this.setState({isLoading: false});
       }
     }
 
     renderPlanets() {
       return this.state.planets.map((planet, i) => (
-          <div className="col" key={i}>
-            <Planet planet={planet} id={i} />
-          </div>
+            <Planet planet={planet} id={i} key={i}/>
             ));
     }
 
     render() {
       let content = '';
-      if(this.state.planets.length){
-        if(!this.state.isLoading){
+      if(!this.state.isLoading){
+        if(this.state.planets.length){
           content = this.renderPlanets();
         }else{
-          content = (<p>Planets are loading</p>);
+          content = (<p>No Planets found</p>);
         }
       }else{
-        content = (<p>No Planets found</p>);
+        content = (<p>Planets are loading</p>);
       }
       return (
           <section>
             <h2>All Planets</h2>
-            <div className="row cards">            
+            <div className="cards">
               {content}
             </div>
           </section>
