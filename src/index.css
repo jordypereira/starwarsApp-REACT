@@ -10,7 +10,7 @@ body {
 
 .cards > .col {
   break-inside: avoid;
-  overflow: none;
+  overflow: unset;
 }
 
 @media (min-width: 620px) {

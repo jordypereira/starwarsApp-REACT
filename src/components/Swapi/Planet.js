@@ -1,19 +1,26 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import Person from './Person';
 import PlanetProperty from './PlanetProperty';
 import * as peopleService from '../../services/Swapi/people.service';
+import {spliceNoMutate, capitalizeFirstLetter} from "../../functions";
+import PlanetHeader from "./PlanetHeader";
+import _ from "lodash";
 
 export default class Planet extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
           people: [],
-          properties: [
+          allProperties: [],
+          shownProperties: [
               'climate',
               'terrain',
             'population',
+          ],
+          disabledProperties: [
+              'residents',
+              'films'
           ]
       };
   }
@@ -21,6 +28,9 @@ export default class Planet extends React.Component {
   componentDidMount() {
     this.props.planet.residents.forEach(element => {
       peopleService.getFromUrl(element).then(response => this.setState({ people: [...this.state.people, response] }));      
+    });
+    this.setState({
+       allProperties: _.difference(Object.keys(this.props.planet), this.state.disabledProperties)
     });
   }
 
@@ -31,48 +41,45 @@ export default class Planet extends React.Component {
   }
 
   renderProperties() {
-      return this.state.properties.map((element, i) => (
-          <PlanetProperty name={this.capitalizeFirstLetter(element)} value={this.props.planet[element]} onDelete={this.deleteProperty.bind(this)} key={i} />
+      return this.state.shownProperties.map((element, i) => (
+          <PlanetProperty name={capitalizeFirstLetter(element)} value={this.props.planet[element]} onDelete={this.deleteProperty.bind(this)} key={i} />
       ));
   }
 
   deleteProperty(e) {
-    const property = e.target.value.toLowerCase();
-    this.setState({
-      properties: this.state.properties.filter(i => i !== property)
+        const property = e.target.value.toLowerCase();
+        this.setState({
+            shownProperties: this.state.shownProperties.filter(i => i !== property)
     });
+  }
+
+  addProperty(e) {
+      e.preventDefault();
+      const property = e.target.value.toLowerCase();
+      this.setState({
+          shownProperties: [...this.state.shownProperties, property]
+      });
+  }
+
+  getRemainingProperties() {
+      return _.difference(this.state.allProperties, this.state.shownProperties)
   }
 
   deleteResident(e) {
     const property = e.target.value;
-    console.log(property)
-    console.log(this.state.people)
-    console.log(this.state.properties)
     this.setState({
-      people: this.spliceNoMutate(this.state.people, property)
+      people: spliceNoMutate(this.state.people, property)
     });
-  }
-
-  capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-  spliceNoMutate(myArray,indexToRemove) {
-    return myArray.slice(0,indexToRemove).concat(myArray.slice(indexToRemove+1));
   }
 
   render () {
     const planet = this.props.planet;
     const residents = planet.residents.length ? this.renderPeople() : (<li className="list-group-item"> This planet has no residents</li>) ;
-    const properties = this.state.properties.length ? this.renderProperties() : '' ;
-
+    const properties = this.state.shownProperties.length ? this.renderProperties() : '' ;
 
     return (
       <div className="card" style={{width: '18rem', marginBottom: '10px'}}>
-        <Link to={`/${planet.id}`}>
-          <div className="card-header">
-            {planet.name}
-          </div>
-        </Link>
+        <PlanetHeader name={planet.name} onAdd={this.addProperty.bind(this)} properties={this.getRemainingProperties()}/>
         <ul className="list-group">
           {properties}
           <div className="card-header">
