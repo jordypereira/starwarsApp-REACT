@@ -2,15 +2,13 @@ export const getAll = () => {
   return fetch('https://swapi.co/api/planets/', {
     cache: 'force-cache',
   }).then(response => response.json())
-}
-
-
+};
 
 export const getFromUrl = (url) => {
   return fetch(url, {
     cache: 'force-cache'
   }).then(response => response.json())
-}
+};
 
 export const get = (id) => {
   return fetch(`https://swapi.co/api/planets/${id}`).then((response) => {
@@ -19,7 +17,7 @@ export const get = (id) => {
       }
       throw new Error('Network response was not ok.');
   })
-}
+};
 
 // export const update = (id, student) => {
 //   return fetch(`http://localhost:1337/students/${id}`, { 

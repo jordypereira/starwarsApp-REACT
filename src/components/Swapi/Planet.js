@@ -56,10 +56,12 @@ export default class Planet extends React.Component {
   }
 
   setResident(resident){
-      this.setState(prevState => ({
+      this.setState(prevState => {
+        return {
           residents: [...prevState.residents, resident.name],
           loadingResidents: false,
-      }));
+        };
+      });
   }
 
   setResidentInLocalStorage(resident){

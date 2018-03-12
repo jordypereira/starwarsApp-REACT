@@ -16,6 +16,9 @@ const Nav = (props) => (
           <li className="nav-item">
             <Link className="nav-link" to="/planets">Planets</Link>
           </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/planets/add">Add Planet</Link>
+          </li>
         </ul>
       </div>
     </nav>

@@ -71,7 +71,7 @@ export default class Planets extends React.Component {
     }
     return (
       <section>
-        <h2>All Planets</h2>
+        <h2 className="text-center">All Planets</h2>
         <div className="cards">
           {content}
         </div>
