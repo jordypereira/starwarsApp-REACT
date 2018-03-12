@@ -2,7 +2,6 @@ import * as React from 'react';
 import Resident from './Resident';
 import PlanetProperty from './PlanetProperty';
 import * as peopleService from '../../services/Swapi/people.service';
-import {capitalizeFirstLetter} from "../../functions";
 import PlanetHeader from "./PlanetHeader";
 import _ from "lodash/array";
 import PropTypes from "prop-types";
