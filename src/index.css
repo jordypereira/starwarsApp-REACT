@@ -24,7 +24,7 @@ body {
   }
 }
 
-@media (min-width: 960px) {
+@media (min-width: 992px) {
   .cards {
     column-count: 3;
   }
