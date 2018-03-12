@@ -14,13 +14,17 @@ export default class Planet extends React.Component {
           people: [],
           allProperties: [],
           shownProperties: [
-              'climate',
-              'terrain',
+            'climate',
+            'terrain',
             'population',
           ],
           disabledProperties: [
-              'residents',
-              'films'
+            'residents',
+            'films',
+            'name',
+            'url',
+            'created',
+            'edited'
           ]
       };
   }
