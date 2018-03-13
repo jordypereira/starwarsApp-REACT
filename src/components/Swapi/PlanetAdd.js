@@ -1,18 +1,21 @@
 import * as React from 'react';
-import {includes} from "lodash/collection";
 import * as peopleService from "../../services/Swapi/people.service";
-import * as planetService from "../../services/Swapi/planets.service";
+import * as array from "lodash/array";
+import Resident from "./Resident";
 
 export default class PlanetAdd extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      planet: {
-        name: '',
-        climate: '',
-        population: '',
-        residents: [],
-      },
+      name: '',
+      climate: '',
+      population: '',
+      residents: [],
+      nameError: '',
+      climateError: '',
+      populationError: '',
+
+
       people: [],
       nextPerson: '',
       loadingPeople: true,
@@ -42,7 +45,7 @@ export default class PlanetAdd extends React.Component {
     )
   }
 
-  setPlanetsInLocalStorage() {
+  setPeopleInLocalStorage() {
     localStorage.setItem('people', JSON.stringify(this.state.people));
   }
 
@@ -54,93 +57,149 @@ export default class PlanetAdd extends React.Component {
       }, () => this.fetchNextPerson(this.state.nextPerson)));
     }
     else {
-      this.setPlanetsInLocalStorage();
+      this.setPeopleInLocalStorage();
       this.setState({loadingPeople: false});
     }
   }
 
-  updateName(value) {
+  onInputChange(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+
     this.setState({
-      planet: {
-        name: value,
-      }
+        [name]: value,
     });
   }
 
-  updateClimate(value) {
-    this.setState({
-      planet: {
-        climate: value,
-      }
-    });
-  }
-
-  updatePopulation(value) {
-    this.setState({
-      planet: {
-        population: value,
-      }
-    });
-  }
-
-  updateResident(resident) {
-    let residents = [...this.state.planet.residents]; // copy
-
-    if (residents.includes(resident)) {
-      residents = residents.filter(c => c !== resident); // remove course
-    } else {
-      residents.push(resident); // add course
-    }
-
-    this.setState({
-      planet: {
-        residents,
-      }
+  updateResidents() {
+    this.setState(prevState => {
+      return {
+          residents: [...prevState.residents, this.resident.value]
+      };
     });
   }
 
   renderPeople() {
-    return this.state.people.map((resident, i) => (
-        <option value={resident.url} key={i}>{resident.name}</option>
-      )
-    );
+    if(this.state.residents){
+      const residentNames = this.state.people.map(resident => resident.name);
+      return array.difference(residentNames, this.state.residents).map((resident, i) => (
+          <option value={resident} key={i}>{resident}</option>
+        )
+      );
+    }
   }
 
-  onSubmit(e) {
+  renderResidents(){
+    return this.state.residents.map((resident, i) => (
+      <Resident key={i} resident={resident}/>
+    ))
+  }
+
+  validate(){
+    let isError = false;
+    // const errors = {
+    //   firstNameError: "",
+    //   lastNameError: "",
+    //   usernameError: "",
+    //   emailError: "",
+    //   passwordError: ""
+    // };
+    //
+    // if (this.state.username.length < 5) {
+    //   isError = true;
+    //   errors.usernameError = "Username needs to be atleast 5 characters long";
+    // }
+    //
+    // if (this.state.email.indexOf("@") === -1) {
+    //   isError = true;
+    //   errors.emailError = "Requires valid email";
+    // }
+    //
+    // this.setState(errors);
+
+    return isError;
+  }
+
+  static onSubmit(e) {
     e.preventDefault(); // stop default form submit
+
+    const err = this.validate();
+    if (!err) {
+      // clear form
+      this.setState({
+        name: '',
+        climate: '',
+        population: '',
+        residents: [],
+        nameError: '',
+        climateError: '',
+        populationError: '',
+      });
+      this.savePlanet();
+
+    }
+  }
+
+  savePlanet(){
+    const name = this.state.name;
+    const climate = this.state.climate;
+    const population = this.state.population;
+    const residents = this.state.residents;
+
+    const planet = {
+      name,
+      climate,
+      population,
+      residents
+    };
+
+    console.log(JSON.stringify(planet));
 
   }
 
   render() {
+    const residents = this.state.residents ? this.renderResidents() : '';
     return (
       <section>
         <h2>Add a Planet</h2>
 
-        <form action="" onSubmit={(e) => this.onSubmit(e)} autoComplete="off">
+        <form action="" autoComplete="off" onSubmit={PlanetAdd.onSubmit.bind(this)}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
-            <input type="text" className="form-control" name="name" id="name" value={this.state.planet.name}
-                   onChange={(e) => this.updateName(e.target.value)}/>
+            <input type="text" className="form-control" name="name" id="name"
+                   value={this.state.name}
+                   onChange={this.onInputChange.bind(this)}/>
           </div>
           <div className="form-group">
             <label htmlFor="climate">Climate</label>
-            <input type="text" className="form-control" name="climate" id="climate" value={this.state.planet.climate}
-                   onChange={(e) => this.updateClimate(e.target.value)}/>
+            <input type="text" className="form-control" name="climate" id="climate"
+                   value={this.state.climate}
+                   onChange={this.onInputChange.bind(this)}/>
           </div>
           <div className="form-group">
             <label htmlFor="population">Population</label>
-            <input type="text" className="form-control" name="population" id="population" value={this.state.planet.population}
-                   onChange={(e) => this.updatePopulation(e.target.value)}/>
+            <input type="text" className="form-control" name="population" id="population"
+                   value={this.state.population}
+                   onChange={this.onInputChange.bind(this)}/>
           </div>
           <div className="form-group">
             <label htmlFor="resident">Residents</label>
-            <select className="form-control" name="resident" id="resident" onChange={(e) => this.updateResident(e.target.value)}>
-              {this.renderPeople()}
-            </select>
+            <ul>
+              {residents}
+            </ul>
+
+            <div className="row">
+              <div className="col-8">
+                <select className="form-control" name="resident" id="resident" ref={(resident) => { this.resident = resident; }}>
+                  {this.renderPeople()}
+                </select>
+              </div>
+              <div className="col">
+                <button className="btn btn-inline btn-dark" onClick={this.updateResidents.bind(this)} type="button">Add Resident</button>
+              </div>
+            </div>
           </div>
-
-
-          <button className="btn btn-primary" type="submit">Save the Planet!</button>
+          <button className="btn btn-primary" type="submit" >Save the Planet!</button>
         </form>
       </section>
     );
