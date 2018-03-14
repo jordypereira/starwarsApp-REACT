@@ -97,25 +97,26 @@ export default class PlanetAdd extends React.Component {
 
   validate(){
     let isError = false;
-    // const errors = {
-    //   firstNameError: "",
-    //   lastNameError: "",
-    //   usernameError: "",
-    //   emailError: "",
-    //   passwordError: ""
-    // };
-    //
-    // if (this.state.username.length < 5) {
-    //   isError = true;
-    //   errors.usernameError = "Username needs to be atleast 5 characters long";
-    // }
-    //
-    // if (this.state.email.indexOf("@") === -1) {
-    //   isError = true;
-    //   errors.emailError = "Requires valid email";
-    // }
-    //
-    // this.setState(errors);
+    const errors = {
+      nameError: '',
+      climateError: '',
+      populationError: '',
+    };
+
+    if(this.state.name < 1){
+      errors.nameError = 'Please fill in a Planet name.';
+      isError = true;
+    }
+    if(this.state.climate < 1){
+      errors.nameError = 'Please fill in a Planet name.';
+      isError = true;
+    }
+    if(this.state.population < 1){
+      errors.nameError = 'Please fill in a Planet name.';
+      isError = true;
+    }
+
+    this.setState(errors);
 
     return isError;
   }
@@ -169,32 +170,38 @@ export default class PlanetAdd extends React.Component {
             <input type="text" className="form-control" name="name" id="name"
                    value={this.state.name}
                    onChange={this.onInputChange.bind(this)}/>
+            <div className="form-text text-muted">
+              {this.state.nameError}
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="climate">Climate</label>
             <input type="text" className="form-control" name="climate" id="climate"
                    value={this.state.climate}
                    onChange={this.onInputChange.bind(this)}/>
+            <div className="form-text text-muted">
+              {this.state.climateError}
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="population">Population</label>
             <input type="text" className="form-control" name="population" id="population"
                    value={this.state.population}
                    onChange={this.onInputChange.bind(this)}/>
+            <div className="form-text text-muted">
+              {this.state.populationError}
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="resident">Residents</label>
             <ul>
               {residents}
             </ul>
-
-            <div className="row">
-              <div className="col-8">
-                <select className="form-control" name="resident" id="resident" ref={(resident) => { this.resident = resident; }}>
-                  {this.renderPeople()}
-                </select>
-              </div>
-              <div className="col">
+            <div className="input-group">
+              <select className="custom-select" name="resident" id="resident" ref={(resident) => { this.resident = resident; }}>
+                {this.renderPeople()}
+              </select>
+              <div className="input-group-append">
                 <button className="btn btn-inline btn-dark" onClick={this.updateResidents.bind(this)} type="button">Add Resident</button>
               </div>
             </div>
