@@ -10,7 +10,7 @@ import {ApolloProvider} from 'react-apollo';
 import Home from "../Home/Home";
 
 const client = new ApolloClient({
-  link: new HttpLink({uri: 'https://e3da70d9.ngrok.io/graphql'}),
+  link: new HttpLink({uri: 'https://quiet-atoll-63686.herokuapp.com/graphql'}),
   cache: new InMemoryCache()
 });
 
