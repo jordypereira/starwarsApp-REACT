@@ -2,8 +2,10 @@ import * as React from 'react';
 import * as peopleService from "../../services/Swapi/people.service";
 import * as array from "lodash/array";
 import Resident from "./Resident";
+import {graphql} from 'react-apollo';
+import gql from 'graphql-tag';
 
-export default class PlanetAdd extends React.Component {
+class PlanetAdd extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,7 +16,6 @@ export default class PlanetAdd extends React.Component {
       nameError: '',
       climateError: '',
       populationError: '',
-
 
       people: [],
       nextPerson: '',
@@ -108,11 +109,11 @@ export default class PlanetAdd extends React.Component {
       isError = true;
     }
     if(this.state.climate < 1){
-      errors.nameError = 'Please fill in a Planet name.';
+      errors.climateError = 'Please fill in a Climate.';
       isError = true;
     }
     if(this.state.population < 1){
-      errors.nameError = 'Please fill in a Planet name.';
+      errors.populationError = 'Please fill in a Population count.';
       isError = true;
     }
 
@@ -126,6 +127,13 @@ export default class PlanetAdd extends React.Component {
 
     const err = this.validate();
     if (!err) {
+      const {name, climate, population, residents } = this.state;
+      const planet = {
+        name,
+        climate,
+        population,
+        residents
+      };
       // clear form
       this.setState({
         name: '',
@@ -136,29 +144,24 @@ export default class PlanetAdd extends React.Component {
         climateError: '',
         populationError: '',
       });
-      this.savePlanet();
+      this.savePlanet(planet);
 
     }
   }
 
-  savePlanet(){
-    const name = this.state.name;
-    const climate = this.state.climate;
-    const population = this.state.population;
-    const residents = this.state.residents;
+  savePlanet = async (planet) => {
 
-    const planet = {
-      name,
-      climate,
-      population,
-      residents
-    };
 
-    console.log(JSON.stringify(planet));
+    const response = this.props.mutate({
+      variables: planet,
+    });
+
+    console.log(response);
 
   }
 
   render() {
+    const {name, climate, population, nameError, climateError, populationError } = this.state;
     const residents = this.state.residents ? this.renderResidents() : '';
     return (
       <section>
@@ -168,28 +171,28 @@ export default class PlanetAdd extends React.Component {
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input type="text" className="form-control" name="name" id="name"
-                   value={this.state.name}
+                   value={name}
                    onChange={this.onInputChange.bind(this)}/>
             <div className="form-text text-muted">
-              {this.state.nameError}
+              {nameError}
             </div>
           </div>
           <div className="form-group">
             <label htmlFor="climate">Climate</label>
             <input type="text" className="form-control" name="climate" id="climate"
-                   value={this.state.climate}
+                   value={climate}
                    onChange={this.onInputChange.bind(this)}/>
             <div className="form-text text-muted">
-              {this.state.climateError}
+              {climateError}
             </div>
           </div>
           <div className="form-group">
             <label htmlFor="population">Population</label>
             <input type="text" className="form-control" name="population" id="population"
-                   value={this.state.population}
+                   value={population}
                    onChange={this.onInputChange.bind(this)}/>
             <div className="form-text text-muted">
-              {this.state.populationError}
+              {populationError}
             </div>
           </div>
           <div className="form-group">
@@ -212,3 +215,11 @@ export default class PlanetAdd extends React.Component {
     );
   }
 }
+
+const createPlanetMutation = gql `
+mutation($name: String! $climate: String! $population: String!){
+  createPlanet(name: $name, climate: $climate, population: $population)
+}
+`;
+
+export default graphql(createPlanetMutation)(PlanetAdd);
