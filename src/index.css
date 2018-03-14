@@ -34,3 +34,26 @@ body {
         column-count: 4;
     }
 }
+
+.submitPlanet {
+    transition: 5s transform, 2s background-color;
+    transform: scale(2);
+    border-radius: 50%;
+    background-color: forestgreen;
+    border-color: forestgreen;
+    animation: fadePlanet 3s 2s, roundPlanet 5s;
+    z-index: 5;
+}
+
+@keyframes fadePlanet {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+@keyframes roundPlanet {
+    from {
+        width: 200px;
+        height: 200px;}
+    to {
+        width: 200px;
+        height: 200px;}
+}

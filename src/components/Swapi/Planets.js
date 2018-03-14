@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Planet from './Planet';
 import * as planetService from '../../services/Swapi/planets.service';
+import MarsLoader from "../Loader/mars-loader";
 
 export default class Planets extends React.Component {
   constructor(props) {
@@ -67,7 +68,7 @@ export default class Planets extends React.Component {
         content = (<p>No Planets found</p>);
       }
     } else {
-      content = (<p>Planets are loading</p>);
+      content = <MarsLoader/>;
     }
     return (
       <section>

@@ -20,6 +20,7 @@ class PlanetAdd extends React.Component {
       people: [],
       nextPerson: '',
       loadingPeople: true,
+      submitPlanet: false,
     };
   }
 
@@ -143,25 +144,28 @@ class PlanetAdd extends React.Component {
         nameError: '',
         climateError: '',
         populationError: '',
-      });
-      this.savePlanet(planet);
+        submitPlanet: true,
+      }, () => setTimeout(() => {
+        this.setState({
+          submitPlanet: false,
+        })
+      }, 5000));
 
+      this.savePlanet(planet);
     }
   }
 
   savePlanet = async (planet) => {
-
-
     const response = this.props.mutate({
       variables: planet,
     });
 
     console.log(response);
 
-  }
+  };
 
   render() {
-    const {name, climate, population, nameError, climateError, populationError } = this.state;
+    const {name, climate, population, nameError, climateError, populationError, submitPlanet } = this.state;
     const residents = this.state.residents ? this.renderResidents() : '';
     return (
       <section>
@@ -170,28 +174,31 @@ class PlanetAdd extends React.Component {
         <form action="" autoComplete="off" onSubmit={PlanetAdd.onSubmit.bind(this)}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
-            <input type="text" className="form-control" name="name" id="name"
+            <input type="text" className={"form-control" + (nameError ? " animated bounce is-invalid" : "")}
+                   name="name" id="name" placeholder={"Earth"}
                    value={name}
                    onChange={this.onInputChange.bind(this)}/>
-            <div className="form-text text-muted">
+            <div className="invalid-feedback">
               {nameError}
             </div>
           </div>
           <div className="form-group">
             <label htmlFor="climate">Climate</label>
-            <input type="text" className="form-control" name="climate" id="climate"
+            <input type="text" className={"form-control" + (climateError ? " animated bounce is-invalid" : "")}
+                   name="climate" id="climate" placeholder={"Rainy"}
                    value={climate}
                    onChange={this.onInputChange.bind(this)}/>
-            <div className="form-text text-muted">
+            <div className="invalid-feedback">
               {climateError}
             </div>
           </div>
           <div className="form-group">
             <label htmlFor="population">Population</label>
-            <input type="text" className="form-control" name="population" id="population"
+            <input type="text" className={"form-control" + (populationError ? " animated bounce is-invalid" : "")}
+                   name="population" id="population" placeholder={"10000"}
                    value={population}
                    onChange={this.onInputChange.bind(this)}/>
-            <div className="form-text text-muted">
+            <div className="invalid-feedback">
               {populationError}
             </div>
           </div>
@@ -209,7 +216,7 @@ class PlanetAdd extends React.Component {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary" type="submit" >Save the Planet!</button>
+          <button className={"btn btn-primary" + (submitPlanet ? " submitPlanet" : "")} type="submit">{submitPlanet ? "Planting a new Planet!" : "Save the Planet!"}</button>
         </form>
       </section>
     );
