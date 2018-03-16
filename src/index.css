@@ -35,13 +35,13 @@ body {
     }
 }
 
+.addPlanetBtn{
+  transition: 500ms all;
+}
+
 .submitPlanet {
-    transition: 5s transform, 2s background-color;
-    transform: scale(2);
-    border-radius: 50%;
-    background-color: forestgreen;
-    border-color: forestgreen;
-    animation: fadePlanet 3s 2s, roundPlanet 5s;
+    /* transition: 5s transform; */
+    animation: fadePlanet 1s 2s forwards, shootPlanet 3s ease-in;
     z-index: 5;
 }
 
@@ -49,11 +49,14 @@ body {
     from {opacity: 1;}
     to {opacity: 0;}
 }
-@keyframes roundPlanet {
-    from {
-        width: 200px;
-        height: 200px;}
-    to {
-        width: 200px;
-        height: 200px;}
+
+@keyframes shootPlanet {
+    0% {
+    transform: translateX(0);}
+    10%{
+    transform: translateX(-200px) rotate(10deg);
+    }
+    100% {
+    transform: translateX(2000px) rotate(-70deg) translateY(-500px);
+  }
 }

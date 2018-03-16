@@ -21,6 +21,7 @@ class PlanetAdd extends React.Component {
       nextPerson: '',
       loadingPeople: true,
       submitPlanet: false,
+      
     };
   }
 
@@ -216,7 +217,7 @@ class PlanetAdd extends React.Component {
               </div>
             </div>
           </div>
-          <button className={"btn btn-primary" + (submitPlanet ? " submitPlanet" : "")} type="submit">{submitPlanet ? "Planting a new Planet!" : "Save the Planet!"}</button>
+          <button className={"btn btn-warning addPlanetBtn" + (submitPlanet ? " submitPlanet" : "")} type="submit">{submitPlanet ? "Shooting your planet among the stars!" : "Save the Planet!"}</button>
         </form>
       </section>
     );
