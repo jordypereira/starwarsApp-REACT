@@ -11,7 +11,7 @@ https://starwars.jordypereira.be/
 - GraphQL with ApolloClient
 
 ## Start
-- cd frontend-react
+- cd in the folder
 - yarn install (or npm install)
 - npm start
 
